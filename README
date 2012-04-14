@@ -1,0 +1,7 @@
+A plugin for TiddlyWeb to support CORS pre-flight checks.
+
+This is an experiment, with limited functionality. As test
+cases increase, functionality will increase.
+
+Copyright 2012, Chris Dent <cdent@peermore.com>
+
