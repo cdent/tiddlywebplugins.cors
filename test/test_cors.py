@@ -34,7 +34,7 @@ def test_simple_get_cors():
     assert response['status'] == '200'
     assert '/bags' in content
     assert response['access-control-allow-origin'] == '*'
-    assert response['access-control-expose-headers'] == 'ETag'
+    assert response['access-control-expose-headers'] == 'ETag, Content-Type'
 
 def test_simple_get_match_origin():
     config['cors.match_origin'] = True
@@ -43,7 +43,7 @@ def test_simple_get_match_origin():
     assert response['status'] == '200'
     assert '/bags' in content
     assert response['access-control-allow-origin'] == 'http://example.com'
-    assert response['access-control-expose-headers'] == 'ETag'
+    assert response['access-control-expose-headers'] == 'ETag, Content-Type'
     config['cors.match_origin'] = False
 
 def test_simple_get_allow_auth():
@@ -53,7 +53,7 @@ def test_simple_get_allow_auth():
     assert response['status'] == '200'
     assert '/bags' in content
     assert response['access-control-allow-origin'] == '*'
-    assert response['access-control-expose-headers'] == 'ETag'
+    assert response['access-control-expose-headers'] == 'ETag, Content-Type'
     assert response['access-control-allow-credentials'] == 'true'
     config['cors.allow_creds'] = False
 
@@ -64,7 +64,7 @@ def test_simple_custom_exposed_headers():
     assert response['status'] == '200'
     assert '/bags' in content
     assert response['access-control-allow-origin'] == '*'
-    assert response['access-control-expose-headers'] == 'ETag, Frank, Barney'
+    assert response['access-control-expose-headers'] == 'ETag, Content-Type, Frank, Barney'
     del config['cors.exposed_headers']
 
 def test_not_simple_no_auth():
@@ -76,7 +76,7 @@ def test_not_simple_no_auth():
     assert response['status'] == '200'
     assert response['access-control-allow-origin'] == 'http://example.com'
     assert response['access-control-allow-methods'] == 'DELETE, GET, PUT'
-    assert response['access-control-allow-headers'] == 'ETag, X-Custom'
+    assert response['access-control-allow-headers'] == 'ETag, Content-Type, X-Custom'
     assert response['access-control-max-age'] == '600'
 
 def test_not_simple_auth():
@@ -89,7 +89,7 @@ def test_not_simple_auth():
     assert response['status'] == '200'
     assert response['access-control-allow-origin'] == 'http://example.com'
     assert response['access-control-allow-methods'] == 'DELETE, GET, PUT'
-    assert response['access-control-allow-headers'] == 'ETag, X-Custom'
+    assert response['access-control-allow-headers'] == 'ETag, Content-Type, X-Custom'
     assert response['access-control-max-age'] == '600'
     assert response['access-control-allow-credentials'] == 'true'
     config['cors.allow_creds'] = False

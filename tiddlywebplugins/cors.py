@@ -4,7 +4,7 @@ CORS handling for TiddlyWeb.
 
 from tiddlyweb.web.wsgi import EncodeUTF8
 
-DEFAULT_EXPOSED_HEADERS = ['ETag']
+DEFAULT_EXPOSED_HEADERS = ['ETag', 'Content-Type']
 DEFAULT_CORS_CACHE_AGE = '600'  # 10 minutes
 
 class PreFlightCheck(object):
