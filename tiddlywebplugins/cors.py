@@ -4,8 +4,10 @@ CORS handling for TiddlyWeb.
 
 from tiddlyweb.web.wsgi import EncodeUTF8
 
+
 DEFAULT_EXPOSED_HEADERS = ['ETag', 'Content-Type']
 DEFAULT_CORS_CACHE_AGE = '600'  # 10 minutes
+
 
 class PreFlightCheck(object):
     """
@@ -38,7 +40,7 @@ class PreFlightCheck(object):
                 allowed_origin = environ['HTTP_ORIGIN']
                 exposed_headers = ', '.join(DEFAULT_EXPOSED_HEADERS)
                 extra_headers = environ.get(
-                        'HTTP_ACCESS_CONTROL_REQUEST_HEADERS', None) 
+                        'HTTP_ACCESS_CONTROL_REQUEST_HEADERS', None)
                 if extra_headers:
                     exposed_headers = exposed_headers + ', %s' % extra_headers
 
@@ -46,7 +48,8 @@ class PreFlightCheck(object):
                         ('Access-Control-Allow-Headers', exposed_headers)]
 
                 if config.get('cors.allow_creds', False):
-                    headers.append(('Access-Control-Allow-Credentials', 'true'))
+                    headers.append(('Access-Control-Allow-Credentials',
+                        'true'))
 
                 headers.append(('Access-Control-Max-Age',
                     DEFAULT_CORS_CACHE_AGE))
@@ -60,6 +63,7 @@ class PreFlightCheck(object):
                 return app(environ, start_response)
         else:
             return self.application(environ, start_response)
+
 
 class CORSResponse(object):
     """
@@ -129,4 +133,3 @@ def init(config):
             config['server_response_filters'].insert(
                     config['server_response_filters']
                     .index(EncodeUTF8) + 1, CORSResponse)
-
