@@ -3,5 +3,30 @@ A plugin for TiddlyWeb to support CORS pre-flight checks.
 This is an experiment, with limited functionality. As test
 cases increase, functionality will increase.
 
+To use add 'tiddlywebplugins.cors' to 'system_plugins' in 
+tiddlywebconfig.py.
+
+There are a few option config settings:
+
+If 'cors.match_origin' is True, then the value of the Origin
+header will be the value of the Access-Control-Allow-Origin header,
+on simple requests. On non-simple request, it always matches. If False
+the value is '*' (on simple requests).
+
+If 'cors.allow_creds' is True, then the
+Access-Control-Allow-Credentials header will be sent with a value
+of 'true', otherwise it will not be sent.
+
+If 'cors.exposed_headers' is set, its should be a list of strings
+representing header names which are appended to the default
+Access-Control-Expose-Headers: ETag. This same list is used to set
+the default of Access-Control-Allow-Headers.
+
+ToDo:
+
+* Blacklist/Whitelist processing of Access-Control-Request-Headers.
+* Auditing with someone else to confirm that this stuff is "correct".
+* Refactoring of the two middlewares. There's a fair bit of overlap.
+
 Copyright 2012, Chris Dent <cdent@peermore.com>
 
