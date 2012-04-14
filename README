@@ -22,6 +22,9 @@ representing header names which are appended to the default
 Access-Control-Expose-Headers: ETag. This same list is used to set
 the default of Access-Control-Allow-Headers.
 
+If 'cors.enable_non_simple' is True, preflight OPTIONS requests are
+handled. This defaults to False to avoid accidental exposure.
+
 ToDo:
 
 * Blacklist/Whitelist processing of Access-Control-Request-Headers.
