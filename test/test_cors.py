@@ -93,3 +93,12 @@ def test_not_simple_auth():
     assert response['access-control-max-age'] == '600'
     assert response['access-control-allow-credentials'] == 'true'
     config['cors.allow_creds'] = False
+
+def test_not_simple_400():
+    response, content = http.request('http://0.0.0.0:8080/rags',
+            method = 'OPTIONS',
+            headers = {'Origin': 'http://example.com',
+                'Access-Control-Request-Method': 'DELETE',
+                'Access-Control-Request-Headers': 'X-Custom'})
+    print response, content
+    assert response['status'] == '404'
