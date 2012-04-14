@@ -30,6 +30,8 @@ ToDo:
 * Blacklist/Whitelist processing of Access-Control-Request-Headers.
 * Auditing with someone else to confirm that this stuff is "correct".
 * Refactoring of the two middlewares. There's a fair bit of overlap.
+  It could become just one that operates on both sides of the internal
+  application, but I find that can be confusing.
 
 Copyright 2012, Chris Dent <cdent@peermore.com>
 
