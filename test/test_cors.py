@@ -7,15 +7,27 @@ http://www.html5rocks.com/en/tutorials/cors/
 from wsgi_intercept import httplib2_intercept
 import wsgi_intercept
 import httplib2
+import shutil
+
 
 from tiddlyweb.config import config
+from tiddlyweb.model.bag import Bag
+from tiddlyweb.model.tiddler import Tiddler
 from tiddlyweb.web.serve import load_app
+from tiddlywebplugins.utils import get_store
 
 
 def setup_module(module):
+    try:
+        shutil.rmtree('store')
+    except:  # it's not there
+        pass
+
     app = load_app()
     def app_fn():
         return app
+
+    module.store = get_store(config)
 
     httplib2_intercept.install()
     wsgi_intercept.add_wsgi_intercept('0.0.0.0', 8080, app_fn)
@@ -100,5 +112,28 @@ def test_not_simple_400():
             headers = {'Origin': 'http://example.com',
                 'Access-Control-Request-Method': 'DELETE',
                 'Access-Control-Request-Headers': 'X-Custom'})
-    print response, content
     assert response['status'] == '404'
+
+def test_cache_handling():
+    bag = Bag('thing')
+    store.put(bag)
+    tiddler = Tiddler('one', 'thing')
+    tiddler.text = '!Hi'
+    store.put(tiddler)
+    response, content = http.request(
+            'http://0.0.0.0:8080/bags/thing/tiddlers/one',
+            headers = {'Origin': 'http://example.com'})
+    assert response['status'] == '200'
+    assert '!Hi' in content
+    assert response['access-control-allow-origin'] == '*'
+    assert response['access-control-expose-headers'] == 'ETag, Content-Type'
+    etag = response['etag']
+
+    response, content = http.request(
+            'http://0.0.0.0:8080/bags/thing/tiddlers/one',
+            headers = {'Origin': 'http://example.com',
+                'If-None-Match': etag})
+
+    assert response['status'] == '304'
+    assert response['access-control-allow-origin'] == '*'
+    assert response['access-control-expose-headers'] == 'ETag, Content-Type'
