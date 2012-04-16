@@ -1,5 +1,21 @@
 """
 CORS handling for TiddlyWeb.
+
+Config settings allow more granular control:
+
+If 'cors.match_origin' is True, then the value of the Origin
+header will be the value of the Access-Control-Allow-Origin header.
+
+If 'cors.allow_creds' is True, then the
+Access-Control-Allow-Credentials header will be sent with a value
+of 'true', otherwise it will not be sent.
+
+If 'cors.exposed_headers' is set, its should be a list of strings
+representing header names which are appended to the default
+Access-Control-Expose-Headers: ETag
+
+If 'cors.cache_age' is set, it is the number of seconds for which
+a preflight check should be cached.
 """
 
 from tiddlyweb.web.wsgi import EncodeUTF8
@@ -51,8 +67,8 @@ class PreFlightCheck(object):
                     headers.append(('Access-Control-Allow-Credentials',
                         'true'))
 
-                headers.append(('Access-Control-Max-Age',
-                    DEFAULT_CORS_CACHE_AGE))
+                headers.append(('Access-Control-Max-Age', '%s' 
+                    % config.get('cors.cache_age', DEFAULT_CORS_CACHE_AGE)))
 
                 headers.append(('Access-Control-Allow-Methods',
                     ', '.join(sorted(methods))))
@@ -70,7 +86,7 @@ class CORSResponse(object):
     Send correct headers in response to a (non-preflight) request
     that provided a CORS 'Origin' header.
 
-    By default if Origin was in the header, then
+    By default, if Origin was in the header, then
 
         Access-Control-Allow-Origin: *
         Access-Control-Expose-Headers: ETag
@@ -80,18 +96,6 @@ class CORSResponse(object):
     For the time being these responses are sent on any request
     method with any status code.
 
-    Config settings allow more granular control:
-
-    If 'cors.match_origin' is True, then the value of the Origin
-    header will be the value of the Access-Control-Allow-Origin header.
-
-    If 'cors.allow_creds' is True, then the
-    Access-Control-Allow-Credentials header will be sent with a value
-    of 'true', otherwise it will not be sent.
-
-    If 'cors.exposed_headers' is set, its should be a list of strings
-    representing header names which are appended to the default
-    Access-Control-Expose-Headers: ETag
     """
 
     def __init__(self, application):

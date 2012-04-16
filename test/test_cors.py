@@ -79,6 +79,24 @@ def test_simple_custom_exposed_headers():
     assert response['access-control-expose-headers'] == 'ETag, Content-Type, Frank, Barney'
     del config['cors.exposed_headers']
 
+def test_not_simple_cache():
+    config['cors.cache_age'] = 400
+    response, content = http.request('http://0.0.0.0:8080/',
+            headers = {'Origin': 'http://example.com'},
+            method = 'OPTIONS')
+    assert response['status'] == '200'
+    assert response['access-control-allow-origin'] == 'http://example.com'
+    assert response['access-control-allow-headers'] == 'ETag, Content-Type'
+    assert response['access-control-max-age'] == '400'
+    del config['cors.cache_age']
+    response, content = http.request('http://0.0.0.0:8080/',
+            headers = {'Origin': 'http://example.com'},
+            method = 'OPTIONS')
+    assert response['status'] == '200'
+    assert response['access-control-allow-origin'] == 'http://example.com'
+    assert response['access-control-allow-headers'] == 'ETag, Content-Type'
+    assert response['access-control-max-age'] == '600'
+
 def test_not_simple_no_auth():
     response, content = http.request('http://0.0.0.0:8080/bags/franny',
             method = 'OPTIONS',
