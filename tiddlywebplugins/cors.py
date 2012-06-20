@@ -16,6 +16,13 @@ Access-Control-Expose-Headers: ETag
 
 If 'cors.cache_age' is set, it is the number of seconds for which
 a preflight check should be cached.
+
+For authenticated cross-domain PUTs of resources the following config
+appears to be required:
+
+    'cors.enable_non_simple': True,
+    'cors.allow_creds': True,
+    'cors.match_origin': True,
 """
 
 from tiddlyweb.web.wsgi import EncodeUTF8
