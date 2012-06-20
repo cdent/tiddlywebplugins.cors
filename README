@@ -6,7 +6,7 @@ cases increase, functionality will increase.
 To use add 'tiddlywebplugins.cors' to 'system_plugins' in 
 tiddlywebconfig.py.
 
-There are a few option config settings:
+There are a few optional config settings:
 
 If 'cors.match_origin' is True, then the value of the Origin
 header will be the value of the Access-Control-Allow-Origin header,
@@ -24,6 +24,16 @@ the default of Access-Control-Allow-Headers.
 
 If 'cors.enable_non_simple' is True, preflight OPTIONS requests are
 handled. This defaults to False to avoid accidental exposure.
+
+For authenticated cross-domain PUTs of resources the following config
+appears to be required:
+
+    'cors.enable_non_simple': True,
+    'cors.allow_creds': True,
+    'cors.match_origin': True,
+
+The match_origin setting is required for the OPTIONS preflight requests
+to be handled effectively.
 
 ToDo:
 
