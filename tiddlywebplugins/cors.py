@@ -42,7 +42,7 @@ class PreFlightCheck(object):
     When an OPTIONS request is made, the response will 404 if the route
     is not available. The methods header will only respond with those
     methods which are actually valid for the requested resource. Both of
-    these things are done by called select() on the selector app.
+    these things are done by calling select() on the selector app.
     """
     def __init__(self, application):
         self.application = application
@@ -52,14 +52,13 @@ class PreFlightCheck(object):
         if ('HTTP_ORIGIN' in environ
                 and environ['REQUEST_METHOD'] == 'OPTIONS'):
 
-            selector = environ['tiddlyweb.config']['selector']
+            config = environ.get('tiddlyweb.config', {})
+            selector = config['selector']
 
             app, _, methods, _ = selector.select(
                     environ['PATH_INFO'], environ['REQUEST_METHOD'])
 
             if methods:  # There are methods on this route
-                config = environ.get('tiddlyweb.config', {})
-
                 allowed_origin = environ['HTTP_ORIGIN']
                 exposed_headers = ', '.join(DEFAULT_EXPOSED_HEADERS)
                 extra_headers = environ.get(
