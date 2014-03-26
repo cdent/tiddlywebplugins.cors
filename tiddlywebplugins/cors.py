@@ -77,7 +77,7 @@ class PreFlightCheck(object):
                     % config.get('cors.cache_age', DEFAULT_CORS_CACHE_AGE)))
 
                 headers.append(('Access-Control-Allow-Methods',
-                    ', '.join(sorted(methods))))
+                    ', '.join(sorted(methods)).encode()))
 
                 start_response('200 OK', headers)
                 return []
